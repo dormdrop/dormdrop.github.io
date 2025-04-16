@@ -1,0 +1,31 @@
+*{
+    margin: 0;
+    padding: 0;
+
+}
+
+.main{
+    width: 100%;
+    background: url(rthy.png);
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+}
+
+.logo{
+    color:rgb(255, 0, 0);
+    font-size: 35px;
+    font-family: Arial;
+    padding-left: 20px;
+    float: left;
+    padding-top: 15px;
+}
+
+
+p {
+    margin-top: -800px; 
+    font-family: Arial;
+    padding-left: 20px;
+    font-size: 30px;
+    color: rgb(255, 0, 0);
+  }
