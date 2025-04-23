@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DormDrop - Package Delivery Service</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(to right, #e2e2e2, #4f46e5);
+      color: #333;
+    }
+
+    .brand-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #4f46e5;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-title .user-icon {
+      width: 32px;
+      height: 32px;
+      background-color: #4f46e5;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-bottom: 80px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #777;
+      position: relative;
+    }
+
+    .tab.active {
+      color: #4f46e5;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #4f46e5;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .search-bar {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 12px 20px 12px 50px;
+      background: #fff;
+      border-radius: 30px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      color: #333;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-bar i {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #4f46e5;
+      font-size: 20px;
+    }
+
+    .package-alert {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .package-alert i {
+      color: #f0ad4e;
+      margin-right: 10px;
+      font-size: 18px;
+      margin-top: 2px;
+    }
+
+    .package-alert .content h3 {
+      font-size: 16px;
+      color: #856404;
+      margin-bottom: 5px;
+    }
+
+    .package-alert .content p {
+      font-size: 14px;
+      color: #856404;
+    }
+
+    .package-alert button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      background: #ffeeba;
+      border: none;
+      border-radius: 6px;
+      color: #856404;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .action-button {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .action-button:hover {
+      transform: translateY(-3px);
+    }
+
+    .action-button:first-child {
+      background: #eef1ff;
+    }
+
+    .action-button:first-child .icon {
+      background: #4f46e5;
+    }
+
+    .action-button:last-child {
+      background: #e7f5e8;
+    }
+
+    .action-button:last-child .icon {
+      background: #4caf50;
+    }
+
+    .action-button .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+      color: white;
+      font-size: 18px;
+    }
+
+    .action-button .text {
+      font-weight: 500;
+      font-size: 15px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .section-title h2 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .section-title a {
+      color: #4f46e5;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-title a i {
+      margin-left: 5px;
+      font-size: 12px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .card .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .card .title {
+      font-weight: 500;
+      font-size: 16px;
+    }
+
+    .card .status {
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: #eef1ff;
+      color: #4f46e5;
+      font-weight: 500;
+    }
+
+    .card .location {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .card .location i {
+      margin-right: 5px;
+      font-size: 14px;
+      color: #4f46e5;
+    }
+
+    .card .info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .card .time {
+      display: flex;
+      align-items: center;
+    }
+
+    .card .time i {
+      margin-right: 5px;
+      font-size: 14px;
+      color: #4f46e5;
+    }
+
+    .card .price {
+      font-weight: 500;
+      color: #333;
+    }
+
+    .card .arrived {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: #4caf50;
+      margin-bottom: 10px;
+    }
+
+    .card .arrived i {
+      margin-right: 5px;
+      font-size: 12px;
+    }
+
+    .card .route {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .card .route i {
+      margin: 0 5px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .card .route i:first-child {
+      margin-left: 0;
+      color: #4f46e5;
+    }
+
+    .card .accept-btn {
+      background: #eef1ff;
+      color: #4f46e5;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .card .accept-btn:hover {
+      background: #dce4ff;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-top: 1px solid #eee;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .bottom-nav .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #999;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .bottom-nav .nav-item.active {
+      color: #4f46e5;
+    }
+
+    .bottom-nav .nav-item i {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    /* Form styles */
+    .form-container {
+      margin-top: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .input-with-icon input, 
+    .input-with-icon select {
+      padding-left: 35px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: #4338ca;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 0;
+    }
+
+    .empty-state i {
+      font-size: 40px;
+      color: #ddd;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      color: #888;
+      margin-bottom: 15px;
+    }
+
+    .info-box {
+      background: #e7f0fd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+
+    .info-box h3 {
+      color: #2563eb;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .info-box p {
+      color: #4b5563;
+      font-size: 14px;
+    }
+
+    .info-box ul {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+
+    .info-box li {
+      font-size: 14px;
+      color: #4b5563;
+      margin-bottom: 5px;
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      color: #888;
+      font-size: 12px;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      background: #4f46e5;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 10px;
+      color: white;
+      font-size: 30px;
+    }
+
+    .profile-name {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .profile-university {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .profile-section {
+      margin-bottom: 20px;
+    }
+
+    .profile-section h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .profile-label {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .profile-value {
+      font-size: 14px;
+    }
+
+    .payment-method {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .payment-icon {
+      width: 30px;
+      height: 30px;
+      background: #3b82f6;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+      color: white;
+      font-weight: bold;
+    }
+
+    .payment-status {
+      margin-left: auto;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .add-payment {
+      color: #4f46e5;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 10px;
+      background: #f3f4f6;
+      border: none;
+      border-radius: 5px;
+      color: #4b5563;
+      font-weight: 500;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      background: #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="brand-title">
+    DormDrop
+    <div class="user-icon">
+      <i class="fas fa-user"></i>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" data-tab="home">Home</div>
+      <div class="tab" data-tab="request">Request</div>
+      <div class="tab" data-tab="deliveries">Deliveries</div>
+      <div class="tab" data-tab="earn">Earn</div>
+      <div class="tab" data-tab="profile">Profile</div>
+    </div>
+    
+    <!-- Home Tab -->
+    <div class="tab-content active" id="home-tab">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Track a package or search deliveries...">
+      </div>
+      
+      <div class="package-alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="content">
+          <h3>Package Notification</h3>
+          <p>Your Amazon package arrived at PO Box #342 at 10:23 AM today. Request delivery now!</p>
+          <button>Request Delivery</button>
+        </div>
+      </div>
+      
+      <div class="action-buttons">
+        <div class="action-button" data-tab="request">
+          <div class="icon">
+            <i class="fas fa-box"></i>
+          </div>
+          <div class="text">Request Delivery</div>
+        </div>
+        <div class="action-button" data-tab="earn">
+          <div class="icon">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <div class="text">Become a Courier</div>
+        </div>
+      </div>
+      
+      <div class="section-title">
+        <h2>My Deliveries</h2>
+        <a href="#" data-tab="deliveries">View All <i class="fas fa-chevron-right"></i></a>
+      </div>
+      
+      <div class="card">
+        <div class="header">
+          <div class="title">Amazon Package</div>
+          <div class="status">Courier assigned</div>
+        </div>
+        <div class="location">
+          <i class="fas fa-map-marker-alt"></i>
+          Box #342 - University PO
+        </div>
+        <div class="arrived">
+          <i class="fas fa-clock"></i>
+          Arrived: 10:23 AM today
+        </div>
+        <div class="info">
+          <div class="time">
+            <i class="fas fa-clock"></i>
+            Delivery: 4:30-5:30 PM
+          </div>
+          <div class="price">$3.50</div>
+        </div>
+      </div>
+      
+      <div class="section-title">
+        <h2>Earn Money as a Courier</h2>
+        <a href="#" data-tab="earn">View All <i class="fas fa-chevron-right"></i></a>
+      </div>
+      
+      <div class="card">
+        <div class="header">
+          <div class="title">Amazon Package</div>
+          <div class="price">$4.25</div>
+        </div>
+        <div class="route">
+          <i class="fas fa-map-marker-alt"></i>
+          University PO Box #342
+          <i class="fas fa-chevron-right"></i>
+          <i class="fas fa-map-marker-alt"></i>
+          North Dorms
+        </div>
+        <div class="arrived">
+          <i class="fas fa-clock"></i>
+          Package arrived: 10:23 AM
+        </div>
+        <div class="info">
+          <div class="time">
+            <i class="fas fa-clock"></i>
+            Deliver by: 12:00-1:00 PM
+          </div>
+          <button class="accept-btn">Accept</button>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="header">
+          <div class="title">Chegg Textbooks</div>
+          <div class="price">$3.00</div>
+        </div>
+        <div class="route">
+          <i class="fas fa-map-marker-alt"></i>
+          University PO Box #157
+          <i class="fas fa-chevron-right"></i>
+          <i class="fas fa-map-marker-alt"></i>
+          West Apartments
+        </div>
+        <div class="arrived">
+          <i class="fas fa-clock"></i>
+          Package arrived: 9:45 AM
+        </div>
+        <div class="info">
+          <div class="time">
+            <i class="fas fa-clock"></i>
+            Deliver by: 2:00-3:00 PM
+          </div>
+          <button class="accept-btn">Accept</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Request Tab -->
+    <div class="tab-content" id="request-tab">
+      <h2>Request Package Delivery</h2>
+      <p class="mb-4" style="margin-bottom: 10px; color: #666;">Have your packages delivered to our PO Box at:<br><strong>DormDrop, PO Box #12345, Houston, TX 77004</strong></p>
+      <p style="margin-bottom: 20px; color: #666;">Fill out this form when your package arrives and a student courier will deliver it to you!</p>
+      
+      <form id="delivery-request-form" class="form-container">
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label">Pickup Location</label>
+          <div class="input-with-icon">
+            <i class="fas fa-store"></i>
+            <select name="pickupLocation" class="form-input" required>
+              <option value="po-box" selected>DormDrop PO Box #12345</option>
+              <option value="student-center">Student Center</option>
+              <option value="campus-store">Campus Store</option>
+              <option value="food-court">University Food Court</option>
+              <option value="library">Main Library</option>
+              <option value="rec-center">Recreation Center</option>
+              <option value="other">Other (specify in notes)</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 25px; padding: 15px; background: #f9f9ff; border-radius: 8px;">
+          <h3 style="font-size: 16px; margin-bottom: 10px;">Alternative Campus Pickup Locations</h3>
+          <p style="font-size: 14px; color: #666; margin-bottom: 15px;">Need to pick up something from elsewhere on campus? Our couriers can grab items from these locations too!</p>
+          
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            <label style="display: flex; align-items: center; font-size: 14px;">
+              <input type="checkbox" name="altPickup-food" style="margin-right: 5px;"> Food/Meals
+            </label>
+            <label style="display: flex; align-items: center; font-size: 14px;">
+              <input type="checkbox" name="altPickup-bookstore" style="margin-right: 5px;"> Campus Bookstore
+            </label>
+            <label style="display: flex; align-items: center; font-size: 14px;">
+              <input type="checkbox" name="altPickup-coffee" style="margin-right: 5px;"> Coffee Shop
+            </label>
+            <label style="display: flex; align-items: center; font-size: 14px;">
+              <input type="checkbox" name="altPickup-print" style="margin-right: 5px;"> Print Center
+            </label>
+          </div>
+          
+          <div class="form-group" style="margin-top: 10px;">
+            <label class="form-label" style="font-size: 14px;">Item Details/Location</label>
+            <div class="input-with-icon">
+              <i class="fas fa-info-circle"></i>
+              <input type="text" name="altPickupDetails" class="form-input" placeholder="E.g., Starbucks order #123, Textbook on hold, etc.">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <div class="input-with-icon">
+              <i class="fas fa-user"></i>
+              <input type="text" name="name" class="form-input" placeholder="Your full name" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Delivery Location</label>
+            <div class="input-with-icon">
+              <i class="fas fa-map-marker-alt"></i>
+              <input type="text" name="location" class="form-input" placeholder="Dorm name, room number" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Preferred Delivery Time</label>
+            <div class="input-with-icon">
+              <i class="fas fa-clock"></i>
+              <input type="text" name="timeframe" class="form-input" placeholder="Today, 2-4 PM" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Package Size</label>
+            <div class="input-with-icon">
+              <i class="fas fa-box"></i>
+              <select name="packageSize" class="form-input" required>
+                <option value="Small">Small (Envelope, Small Box)</option>
+                <option value="Medium" selected>Medium (Shoebox, Textbook)</option>
+                <option value="Large">Large (Requires two hands)</option>
+                <option value="X-Large">X-Large (Requires dolly)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Tracking Number</label>
+            <input type="text" name="trackingNumber" class="form-input" placeholder="UPS/AMZN/USPS tracking # (if applicable)">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <div class="input-with-icon">
+              <i class="fas fa-phone"></i>
+              <input type="tel" name="phone" class="form-input" placeholder="For delivery coordination" required>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="input-with-icon">
+              <i class="fas fa-envelope"></i>
+              <input type="email" name="email" class="form-input" placeholder="Your email address" required>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Special Instructions</label>
+          <textarea name="notes" class="form-input" placeholder="Any special delivery instructions?" rows="3"></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">Submit Delivery Request</button>
+      </form>
+    </div>
+    
+    <!-- Deliveries Tab -->
+    <div class="tab-content" id="deliveries-tab">
+      <h2 style="margin-bottom: 20px; font-size: 20px; font-weight: 600;">My Deliveries</h2>
+      <div id="delivery-list">
+        <div class="card">
+          <div class="header">
+            <div class="title">Amazon Package</div>
+            <div class="status">Courier assigned</div>
+          </div>
+          <div class="location">
+            <i class="fas fa-map-marker-alt"></i>
+            Box #342 - University PO
+          </div>
+          <div class="arrived">
+            <i class="fas fa-clock"></i>
+            Arrived: 10:23 AM today
+          </div>
+          <div class="info">
+            <div class="time">
+              <i class="fas fa-clock"></i>
+              Delivery: 4:30-5:30 PM
+            </div>
+            <div class="price">$3.50</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="header">
+            <div class="title">Chegg Textbooks</div>
+            <div class="status">Pending</div>
+          </div>
+          <div class="location">
+            <i class="fas fa-map-marker-alt"></i>
+            Box #157 - University PO
+          </div>
+          <div class="arrived">
+            <i class="fas fa-clock"></i>
+            Arrived: 9:45 AM today
+          </div>
+          <div class="info">
+            <div class="time">
+              <i class="fas fa-clock"></i>
+              Delivery: 2:00-3:00 PM
+            </div>
+            <div class="price">$3.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Earn Tab -->
+    <div class="tab-content" id="earn-tab">
+      <h2 style="margin-bottom: 10px; font-size: 20px; font-weight: 600;">Earn Money as a Courier</h2>
+      <p style="margin-bottom: 20px; color: #666;">Pick up and deliver packages to earn money between classes!</p>
+      
+      <div class="tabs" style="margin-bottom: 20px; border-bottom: 1px solid #eee;">
+        <div class="tab active" data-subtab="packages-tab" style="display: inline-block; padding: 8px 12px; font-size: 14px; cursor: pointer; color: #4f46e5; border-bottom: 2px solid #4f46e5;">Packages</div>
+        <div class="tab" data-subtab="campus-pickups-tab" style="display: inline-block; padding: 8px 12px; font-size: 14px; cursor: pointer; color: #666;">Campus Pickups</div>
+      </div>
+      
+      <div class="tab-content active" id="packages-tab">
+        <div class="card">
+          <div class="header">
+            <div class="title">Amazon Package</div>
+            <div class="price">$4.25</div>
+          </div>
+          <div class="route">
+            <i class="fas fa-map-marker-alt"></i>
+            University PO Box #342
+            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-map-marker-alt"></i>
+            North Dorms
+          </div>
+          <div class="arrived">
+            <i class="fas fa-clock"></i>
+            Package arrived: 10:23 AM
+          </div>
+          <div class="info">
+            <div class="time">
+              <i class="fas fa-clock"></i>
+              Deliver by: 12:00-1:00 PM
+            </div>
+            <button class="accept-btn">Accept</button>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="header">
+            <div class="title">Chegg Textbooks</div>
+            <div class="price">$3.00</div>
+          </div>
+          <div class="route">
+            <i class="fas fa-map-marker-alt"></i>
+            University PO Box #157
+            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-map-marker-alt"></i>
+            West Apartments
+          </div>
+          <div class="arrived">
+            <i class="fas fa-clock"></i>
+            Package arrived: 9:45 AM
+          </div>
+          <div class="info">
+            <div class="time">
+              <i class="fas fa-clock"></i>
+              Deliver by: 2:00-3:00 PM
+            </div>
+            <button class="accept-btn">Accept</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="campus-pickups-tab" style="display: none;">
+        <div class="card">
+          <div class="header">
+            <div class="title">Starbucks Order</div>
+            <div class="price">$5.00</div>
+          </div>
+          <div class="route">
+            <i class="fas fa-coffee"></i>
+            Student Center Starbucks
+            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-map-marker-alt"></i>
+            Engineering Building
+          </div>
+          <div class="arrived">
+            <i class="fas fa-info-circle"></i>
+            Order #4502 (Venti Latte, Muffin)
+          </div>
+          <div class="info">
+            <div class="time">
+              <i class="fas fa-clock"></i>
+              Pickup by: 11:30 AM
+            </div>
+            <button class="accept-btn">Accept</button>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="header">
+            <div class="title">Campus Store Pickup</div>
+            <div class="price">$4.50</div>
+          </div>
+          <div class="route">
+            <i class="fas fa-store"></i>
+            University Bookstore
+            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-map-marker-alt"></i>
+            Cougar Village
+          </div>
+          <div class="arrived">
+            <i class="fas fa-info-circle"></i>
+            Textbook held at counter (Physics 101)
+          </div>
+          <div class="info">
+            <div class="time">
+              <i class="fas fa-clock"></i>
+              Deliver by: 3:00 PM
+            </div>
+            <button class="accept-btn">Accept</button>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="header">
+            <div class="title">Food Court Order</div>
+            <div class="price">$6.50</div>
+          </div>
+          <div class="route">
+            <i class="fas fa-utensils"></i>
+            University Food Court (Panda Express)
+            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-map-marker-alt"></i>
+            Library Study Room 204
+          </div>
+          <div class="arrived">
+            <i class="fas fa-info-circle"></i>
+            Order ready for pickup at 12:15 PM
+          </div>
+          <div class="info">
+            <div class="time">
+              <i class="fas fa-clock"></i>
+              Deliver by: 12:30 PM
+            </div>
+            <button class="accept-btn">Accept</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="info-box">
+        <h3>Courier Information</h3>
+        <p>As a DormDrop courier, you'll earn $3-7 per delivery depending on item type, size, and distance.</p>
+        <ul>
+          <li>Set your own schedule</li>
+          <li>Get paid weekly via Venmo/PayPal</li>
+          <li>Deliveries typically take 15-20 minutes</li>
+          <li>Higher rates for food and campus store pickups</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Profile Tab -->
+    <div class="tab-content" id="profile-tab">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-name">John Doe</div>
+        <div class="profile-university">University of Houston</div>
+      </div>
+      
+      <div class="card profile-section">
+        <h3>Account Information</h3>
+        <div class="profile-row">
+          <div class="profile-label">Email:</div>
+          <div class="profile-value">john.doe@university.edu</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-label">Phone:</div>
+          <div class="profile-value">(123) 456-7890</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-label">Default Delivery Address:</div>
+          <div class="profile-value">North Dorms, Room 342</div>
+        </div>
+      </div>
+      
+      <div class="card profile-section">
+        <h3>Payment Methods</h3>
+        <div class="payment-method">
+          <div class="payment-icon">V</div>
+          <div>Venmo</div>
+          <div class="payment-status">Connected</div>
+        </div>
+        <button class="add-payment">+ Add Payment Method</button>
+      </div>
+      
+      <button class="logout-btn">Log Out</button>
+    </div>
+    
+    <div class="footer">
+      <p>DormDrop © 2025</p>
+      <p>A student-run service for University of Houston students</p>
+    </div>
+  </div>
+  
+  <div class="bottom-nav">
+    <div class="nav-item active" data-tab="home">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" data-tab="deliveries">
+      <i class="fas fa-clock"></i>
+      <span>Deliveries</span>
+    </div>
+    <div class="nav-item" data-tab="earn">
+      <i class="fas fa-dollar-sign"></i>
+      <span>Earn</span>
+    </div>
+    <div class="nav-item" data-tab="profile">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </div>
+  </div>
+
+  <script>
+    // Mock data for delivery requests
+    const deliveryRequests = [
+      {
+        id: 1,
+        name: "Alex Johnson",
+        location: "Cougar Village, Room 342",
+        timeframe: "Today, 3-5 PM",
+        packageSize: "Medium",
+        trackingNumber: "UPS1234567890",
+        phone: "713-555-1234",
+        email: "alex@example.com",
+        notes: "Please text before delivery",
+        status: "pending",
+        pickupType: "package",
+        pickupLocation: "po-box"
+      },
+      {
+        id: 2,
+        name: "Jordan Smith",
+        location: "Moody Towers, North Tower, Room 523",
+        timeframe: "Tomorrow, 1-3 PM",
+        packageSize: "Small",
+        trackingNumber: "AMZN987654321",
+        phone: "713-555-5678",
+        email: "jordan@example.com",
+        notes: "Leave at front desk if no answer",
+        status: "pending",
+        pickupType: "package",
+        pickupLocation: "po-box"
+      }
+    ];
+    
+    // Mock data for campus pickups
+    const campusPickups = [
+      {
+        id: 1,
+        name: "Emma Wilson",
+        location: "Engineering Building, Room 205",
+        timeframe: "Today, 11:30-12:00 PM",
+        pickupType: "food",
+        pickupLocation: "Student Center Starbucks",
+        pickupDetails: "Order #4502 (Venti Latte, Muffin)",
+        phone: "713-555-2468",
+        email: "emma@example.com",
+        price: "$5.00",
+        status: "pending"
+      },
+      {
+        id: 2,
+        name: "Michael Rodriguez",
+        location: "Cougar Village, Room 128",
+        timeframe: "Today, 3:00-4:00 PM",
+        pickupType: "bookstore",
+        pickupLocation: "University Bookstore",
+        pickupDetails: "Textbook held at counter (Physics 101)",
+        phone: "713-555-3690",
+        email: "michael@example.com",
+        price: "$4.50",
+        status: "pending"
+      },
+      {
+        id: 3,
+        name: "Sophia Chen",
+        location: "Library Study Room 204",
+        timeframe: "Today, 12:30-1:00 PM",
+        pickupType: "food",
+        pickupLocation: "University Food Court (Panda Express)",
+        pickupDetails: "Order ready for pickup at 12:15 PM",
+        phone: "713-555-1357",
+        email: "sophia@example.com",
+        price: "$6.50",
+        status: "pending"
+      }
+    ];
+    
+    // Get current user from session storage (mock)
+    const currentUser = {
+      name: "John Doe",
+      email: "john.doe@university.edu",
+      phone: "(123) 456-7890",
+      address: "North Dorms, Room 342"
+    };
+    
+    // Main tab switching functionality
+    document.querySelectorAll('.tab[data-tab]').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        
+        // Deactivate all tabs
+        document.querySelectorAll('.tab[data-tab]').forEach(t => {
+          t.classList.remove('active');
+        });
+        
+        // Activate clicked tab
+        this.classList.add('active');
+        
+        // Show corresponding content
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId + '-tab').classList.add('active');
+        
+        // Update bottom nav
+        updateBottomNav(tabId);
+      });
+    });
+    
+    // Sub-tab switching for Earn section
+    document.querySelectorAll('.tab[data-subtab]').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Get parent tab content
+        const parentTab = this.closest('.tab-content');
+        
+        // Hide all sub-tab contents within this parent
+        parentTab.querySelectorAll('.tab-content').forEach(content => {
+          content.style.display = 'none';
+        });
+        
+        // Deactivate all sub-tabs
+        parentTab.querySelectorAll('.tab[data-subtab]').forEach(t => {
+          t.classList.remove('active');
+        });
+        
+        // Activate clicked sub-tab
+        this.classList.add('active');
+        
+        // Show corresponding content
+        const subtabId = this.getAttribute('data-subtab');
+        document.getElementById(subtabId).style.display = 'block';
+      });
+    });
+    
+    // Action buttons tab navigation
+    document.querySelectorAll('.action-button').forEach(button => {
+      button.addEventListener('click', function() {
+        const tabId = this.getAttribute('data-tab');
+        if (tabId) {
+          // Trigger click on corresponding tab
+          document.querySelector(`.tab[data-tab="${tabId}"]`).click();
+        }
+      });
+    });
+    
+    // Section title view all links
+    document.querySelectorAll('.section-title a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const tabId = this.getAttribute('data-tab');
+        if (tabId) {
+          // Trigger click on corresponding tab
+          document.querySelector(`.tab[data-tab="${tabId}"]`).click();
+        }
+      });
+    });
+    
+    // Bottom navigation
+    document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const tabId = this.getAttribute('data-tab');
+        if (tabId) {
+          // Trigger click on corresponding tab
+          document.querySelector(`.tab[data-tab="${tabId}"]`).click();
+        }
+      });
+    });
+    
+    function updateBottomNav(tabId) {
+      // Remove active class from all items
+      document.querySelectorAll('.bottom-nav .nav-item').forEach(navItem => {
+        navItem.classList.remove('active');
+      });
+      
+      // Add active class to corresponding item
+      document.querySelector(`.bottom-nav .nav-item[data-tab="${tabId}"]`).classList.add('active');
+    }
+    
+    // Package alert request button
+    document.querySelector('.package-alert button').addEventListener('click', function() {
+      // Switch to request tab
+      document.querySelector('.tab[data-tab="request"]').click();
+    });
+    
+    // Accept buttons for courier cards
+    document.querySelectorAll('.accept-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const packageTitle = this.closest('.card').querySelector('.title').textContent;
+        alert(`You've accepted to deliver ${packageTitle}. Please pick up the package within the next hour.`);
+      });
+    });
+    
+    // Show/hide alternative pickup section based on pickup location selection
+    const pickupLocationSelect = document.querySelector('select[name="pickupLocation"]');
+    const altPickupSection = document.querySelector('.form-group input[name="altPickupDetails"]').closest('.form-group').parentElement;
+    
+    if (pickupLocationSelect) {
+      pickupLocationSelect.addEventListener('change', function() {
+        const showAltSection = this.value !== 'po-box';
+        altPickupSection.style.display = showAltSection ? 'block' : 'none';
+        
+        // Update checkboxes based on location
+        const foodCheckbox = document.querySelector('input[name="altPickup-food"]');
+        const bookstoreCheckbox = document.querySelector('input[name="altPickup-bookstore"]');
+        const coffeeCheckbox = document.querySelector('input[name="altPickup-coffee"]');
+        const printCheckbox = document.querySelector('input[name="altPickup-print"]');
+        
+        // Reset all checkboxes
+        foodCheckbox.checked = false;
+        bookstoreCheckbox.checked = false;
+        coffeeCheckbox.checked = false;
+        printCheckbox.checked = false;
+        
+        // Auto-check relevant checkbox based on selection
+        if (this.value === 'food-court') {
+          foodCheckbox.checked = true;
+        } else if (this.value === 'campus-store') {
+          bookstoreCheckbox.checked = true;
+        } else if (this.value === 'student-center') {
+          coffeeCheckbox.checked = true;
+        }
+      });
+      
+      // Initialize on page load
+      altPickupSection.style.display = 'none';
+    }
+    
+    // Form submission for delivery requests
+    document.getElementById('delivery-request-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form data
+      const formData = new FormData(this);
+      
+      // Check if this is a package or campus pickup
+      const isPackage = formData.get('pickupLocation') === 'po-box';
+      const pickupLocation = formData.get('pickupLocation');
+      
+      // Determine pickup type
+      let pickupType = 'package';
+      let pickupDetails = '';
+      
+      if (!isPackage) {
+        if (formData.get('altPickup-food') === 'on') {
+          pickupType = 'food';
+        } else if (formData.get('altPickup-bookstore') === 'on') {
+          pickupType = 'bookstore';
+        } else if (formData.get('altPickup-coffee') === 'on') {
+          pickupType = 'coffee';
+        } else if (formData.get('altPickup-print') === 'on') {
+          pickupType = 'print';
+        }
+        
+        pickupDetails = formData.get('altPickupDetails') || '';
+      }
+      
+      // Create request object
+      const newRequest = {
+        id: deliveryRequests.length + 1,
+        name: formData.get('name'),
+        location: formData.get('location'),
+        timeframe: formData.get('timeframe'),
+        packageSize: formData.get('packageSize'),
+        trackingNumber: formData.get('trackingNumber') || '',
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        notes: formData.get('notes') || '',
+        status: "pending",
+        pickupType: pickupType,
+        pickupLocation: pickupLocation,
+        pickupDetails: pickupDetails
+      };
+      
+      // Add to appropriate list
+      if (isPackage) {
+        deliveryRequests.push(newRequest);
+      } else {
+        // For campus pickups, create a similar object but with campus pickup specific fields
+        const newCampusPickup = {
+          id: campusPickups.length + 1,
+          name: formData.get('name'),
+          location: formData.get('location'),
+          timeframe: formData.get('timeframe'),
+          pickupType: pickupType,
+          pickupLocation: getPickupLocationName(pickupLocation),
+          pickupDetails: pickupDetails,
+          phone: formData.get('phone'),
+          email: formData.get('email'),
+          price: "$" + (pickupType === 'food' ? "6.50" : "4.50"), // Example pricing
+          status: "pending"
+        };
+        
+        campusPickups.push(newCampusPickup);
+      }
+      
+      // Reset form
+      this.reset();
+      
+      // Show success message
+      alert("Delivery request submitted successfully!");
+      
+      // Redirect to deliveries tab
+      document.querySelector('.tab[data-tab="deliveries"]').click();
+    });
+    
+    // Helper function to get friendly location name
+    function getPickupLocationName(location) {
+      const locationMap = {
+        'student-center': 'Student Center',
+        'campus-store': 'Campus Store',
+        'food-court': 'University Food Court',
+        'library': 'Main Library',
+        'rec-center': 'Recreation Center',
+        'other': 'Custom Location'
+      };
+      
+      return locationMap[location] || location;
+    }
+    
+    // Logout functionality
+    document.querySelector('.logout-btn').addEventListener('click', function() {
+      // In a real app, this would clear session and redirect to login
+      alert("You have been logged out!");
+      // For demo, just redirect to home tab
+      document.querySelector('.tab[data-tab="home"]').click();
+    });
+  </script>
+</body>
+</html>
