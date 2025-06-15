@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agora - Student Government Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-purple: #667eea;
+            --secondary-purple: #764ba2;
+            --dark-bg: #0f0f23;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-light: rgba(255, 255, 255, 0.9);
+            --text-dark: #1f2937;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-light);
+            background: var(--dark-bg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced floating orbs background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(102, 126, 234, 0.4), rgba(118, 75, 162, 0.2));
+            filter: blur(2px);
+            animation: float 20s infinite linear;
+        }
+
+        .orb-1 { width: 200px; height: 200px; top: 10%; left: 10%; animation-duration: 25s; }
+        .orb-2 { width: 150px; height: 150px; top: 60%; right: 15%; animation-duration: 30s; animation-direction: reverse; }
+        .orb-3 { width: 100px; height: 100px; bottom: 20%; left: 20%; animation-duration: 35s; }
+        .orb-4 { width: 120px; height: 120px; top: 30%; right: 30%; animation-duration: 28s; animation-direction: reverse; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(50px, -30px) rotate(90deg); }
+            50% { transform: translate(-20px, 40px) rotate(180deg); }
+            75% { transform: translate(-40px, -20px) rotate(270deg); }
+        }
+
+        /* Particle system */
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--primary-purple);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particle-float 15s infinite linear;
+        }
+
+        @keyframes particle-float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Enhanced Header */
+        header {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.05em;
+            padding: 0.5rem 0;
+            display: inline-block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: var(--glass-bg);
+            color: white;
+        }
+
+        .stats {
+            display: flex;
+            gap: 3rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            position: relative;
+        }
+
+        .stat-number {
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Enhanced Hero Section */
+        .hero {
+            padding: 8rem 0 6rem;
+            text-align: center;
+            position: relative;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            letter-spacing: -0.05em;
+            line-height: 1.3;
+            color: white;
+            background: linear-gradient(135deg, white, rgba(255, 255, 255, 0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding: 0.5rem 0;
+            display: inline-block;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            font-weight: 400;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-primary, .cta-secondary {
+            padding: 1.25rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            border: none;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-secondary {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 2px solid var(--glass-border);
+        }
+
+        .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced Main Content */
+        .main-content {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin: 0 2rem 6rem 2rem;
+            position: relative;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab:hover {
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+        }
+
+        .tab-content {
+            padding: 3rem;
+        }
+
+        /* Enhanced Petition Cards */
+        .petition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+        }
+
+        .petition-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .petition-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .petition-card:hover::before {
+            left: 100%;
+        }
+
+        .petition-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.4);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .petition-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .petition-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .petition-category {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .petition-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .petition-progress {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary-purple), var(--secondary-purple));
+            height: 100%;
+            transition: width 1s ease;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .progress-text strong {
+            color: white;
+        }
+
+        .petition-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sign-button {
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .sign-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .sign-button:disabled {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+            opacity: 0.9;
+        }
+
+        .share-button, .view-button {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .share-button:hover, .view-button:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: var(--primary-purple);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .petition-meta {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            flex-wrap: wrap;
+        }
+
+        .urgency-indicator {
+            width: 4px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .urgency-high .urgency-indicator { background: var(--danger); }
+        .urgency-medium .urgency-indicator { background: var(--warning); }
+        .urgency-low .urgency-indicator { background: var(--success); }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 12px;
+            border: 1px solid;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .status-review {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1));
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .status-success {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+            color: #3b82f6;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Priority indicators */
+        .priority-high { color: var(--danger); }
+        .priority-medium { color: var(--warning); }
+        .priority-low { color: var(--success); }
+
+        /* Enhanced Footer */
+        .footer-info {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 6rem 3rem;
+            text-align: center;
+            margin: 0 2rem 6rem 2rem;
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-info h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            letter-spacing: -0.025em;
+        }
+
+        .footer-info p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .footer-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .feature-desc {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Mobile Responsive - Enhanced */
+        @media (max-width: 1024px) {
+            .petition-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .stats {
+                gap: 2rem;
+            }
+            
+            .petition-card {
+                padding: 2rem;
+            }
+            
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .main-content, .footer-info {
+                margin: 0 1rem 3rem 1rem;
+                border-radius: 16px;
+            }
+            
+            /* Enhanced Mobile Header */
+            header {
+                padding: 1rem 0;
+                position: sticky;
+                top: 0;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            
+            /* Mobile Success Message */
+            .success-message {
+                top: 1rem;
+                left: 1rem;
+                right: 1rem;
+                max-width: none;
+                transform: translateY(-100px);
+                text-align: center;
+                font-size: 0.9rem;
+                padding: 0.875rem 1.5rem;
+            }
+            
+            .success-message.show {
+                transform: translateY(0);
+            }
+            
+            .stats {
+                flex-direction: row;
+                justify-content: space-around;
+                gap: 1rem;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.05);
+                padding: 1rem;
+                border-radius: 12px;
+                backdrop-filter: blur(10px);
+            }
+            
+            .stat-item {
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            
+            /* Mobile Hero */
+            .hero {
+                padding: 4rem 0 3rem;
+                min-height: 60vh;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+                line-height: 1.2;
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+                padding: 0 1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+                padding: 0 1rem;
+            }
+            
+            .cta-primary, .cta-secondary {
+                width: 100%;
+                max-width: 280px;
+                padding: 1rem 2rem;
+                font-size: 1rem;
+                text-align: center;
+            }
+            
+            /* Mobile Tabs */
+            .tabs {
+                flex-direction: row;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .tab {
+                min-width: 120px;
+                padding: 1rem 1.5rem;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+            
+            /* Mobile Tab Content */
+            .tab-content {
+                padding: 1.5rem;
+            }
+            
+            /* Enhanced Mobile Petition Cards */
+            .petition-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .petition-card {
+                padding: 1.5rem;
+                border-radius: 12px;
+                margin-bottom: 0;
+            }
+            
+            .petition-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+                margin-bottom: 1rem;
+            }
+            
+            .petition-title {
+                font-size: 1.25rem;
+                line-height: 1.3;
+                margin-bottom: 0.5rem;
+            }
+            
+            .petition-category {
+                align-self: flex-start;
+                font-size: 0.7rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .petition-description {
+                font-size: 0.95rem;
+                line-height: 1.6;
+                margin-bottom: 1.5rem;
+            }
+            
+            .petition-progress {
+                margin-bottom: 1.5rem;
+            }
+            
+            .progress-text {
+                flex-direction: column;
+                gap: 0.25rem;
+                align-items: flex-start;
+                font-size: 0.85rem;
+            }
+            
+            /* Mobile Actions */
+            .petition-actions {
+                flex-direction: column;
+                gap: 0.75rem;
+                margin-bottom: 1rem;
+            }
+            
+            .sign-button {
+                width: 100%;
+                max-width: none;
+                padding: 0.875rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .share-button, .view-button {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Mobile Meta */
+            .petition-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+                font-size: 0.8rem;
+                padding-top: 1rem;
+            }
+            
+            /* Mobile Footer */
+            .footer-info {
+                padding: 3rem 1.5rem;
+                margin: 0 1rem 3rem 1rem;
+                border-radius: 16px;
+            }
+            
+            .footer-info h3 {
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .footer-info p {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+                padding: 0;
+            }
+            
+            .footer-features {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+            
+            .feature-item {
+                padding: 1.5rem;
+                text-align: center;
+            }
+            
+            .feature-icon {
+                margin: 0 auto 1rem auto;
+            }
+            
+            .feature-title {
+                font-size: 1.1rem;
+            }
+            
+            .feature-desc {
+                font-size: 0.9rem;
+            }
+            
+            /* Mobile Empty State */
+            .empty-state {
+                padding: 2rem 1rem;
+            }
+            
+            .empty-state h3 {
+                font-size: 1.25rem;
+            }
+            
+            .empty-state p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Extra small mobile devices */
+            .container {
+                padding: 0 0.75rem;
+            }
+            
+            .main-content, .footer-info {
+                margin: 0 0.75rem 2rem 0.75rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+                padding: 0 0.5rem;
+            }
+            
+            .tab-content {
+                padding: 1rem;
+            }
+            
+            .petition-card {
+                padding: 1.25rem;
+            }
+            
+            .petition-title {
+                font-size: 1.1rem;
+            }
+            
+            .petition-description {
+                font-size: 0.9rem;
+            }
+            
+            .stats {
+                padding: 0.75rem;
+            }
+            
+            .stat-number {
+                font-size: 1.25rem;
+            }
+            
+            .stat-label {
+                font-size: 0.6rem;
+            }
+            
+            .footer-info {
+                padding: 2rem 1rem;
+            }
+            
+            .footer-info h3 {
+                font-size: 1.5rem;
+            }
+            
+            .feature-item {
+                padding: 1.25rem;
+            }
+        }
+
+        /* Touch-friendly interactions */
+        @media (hover: none) and (pointer: coarse) {
+            .petition-card:hover {
+                transform: none;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            }
+            
+            .sign-button:hover,
+            .share-button:hover,
+            .view-button:hover,
+            .cta-primary:hover,
+            .cta-secondary:hover {
+                transform: none;
+            }
+            
+            .nav-link:hover {
+                background: none;
+            }
+            
+            /* Add touch feedback */
+            .sign-button:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+            
+            .share-button:active,
+            .view-button:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+            
+            .cta-primary:active,
+            .cta-secondary:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+            
+            .tab:active {
+                background: rgba(255, 255, 255, 0.15);
+                transition: background 0.1s ease;
+            }
+        }
+
+        /* Improve tap targets */
+        .sign-button,
+        .share-button,
+        .view-button,
+        .tab,
+        .cta-primary,
+        .cta-secondary {
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+
+        /* Better mobile scrolling */
+        .tabs {
+            scroll-behavior: smooth;
+        }
+
+        /* Reduce animations on mobile for better performance */
+        @media (max-width: 768px) {
+            .floating-orb {
+                animation-duration: 40s;
+            }
+            
+            .particle {
+                animation-duration: 20s;
+            }
+            
+            .progress-fill::after {
+                animation-duration: 5s;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Success Message - Mobile Optimized */
+        .success-message {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            font-weight: 600;
+            max-width: 300px;
+        }
+
+        .success-message.show {
+            transform: translateX(0);
+        }
+
+        /* Mobile Menu Styles */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            gap: 4px;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle.open span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .mobile-menu-toggle.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.open span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 35, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu-overlay.show {
+            display: flex;
+        }
+
+        .mobile-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .mobile-nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav-link:active {
+            background: rgba(102, 126, 234, 0.2);
+            transform: scale(0.98);
+        }
+
+        /* Empty state styles */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Admin Panel Styles - HIDDEN FROM USERS */
+        .admin-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--primary-purple), var(--secondary-purple));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: none; /* HIDDEN FROM USERS */
+        }
+
+        .admin-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Agora</div>
+                <nav>
+                    <ul class="nav-links">
+                        <li><a href="#petitions" class="nav-link">Petitions</a></li>
+                        <li><a href="#about" class="nav-link">How It Works</a></li>
+                        <li><a href="#impact" class="nav-link">Our Impact</a></li>
+                        <li><a href="#contact" class="nav-link">Contact</a></li>
+                    </ul>
+                    <!-- Mobile Menu Button -->
+                    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <!-- Mobile Menu Overlay -->
+                    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+                        <div class="mobile-menu">
+                            <a href="#petitions" class="mobile-nav-link" onclick="closeMobileMenu()">Petitions</a>
+                            <a href="#about" class="mobile-nav-link" onclick="closeMobileMenu()">How It Works</a>
+                            <a href="#impact" class="mobile-nav-link" onclick="closeMobileMenu()">Our Impact</a>
+                            <a href="#contact" class="mobile-nav-link" onclick="closeMobileMenu()">Contact</a>
+                        </div>
+                    </div>
+                </nav>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="activeStudentsCount">2,847</span>
+                        <div class="stat-label">Active Students</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="changesMadeCount">14</span>
+                        <div class="stat-label">Changes Made</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="successRateCount">92%</span>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="hero">
+            <div class="hero-content fade-in-up">
+                <h1>Your Voice. Real Change.</h1>
+                <p>Join thousands of students creating meaningful change on campus through organized petitions and student government action.</p>
+                <div class="cta-buttons">
+                    <button class="cta-primary" onclick="scrollToPetitions()">View Active Petitions</button>
+                    <a href="#about" class="cta-secondary">Learn How It Works</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="main-content" id="petitions">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('active')">Active Petitions</button>
+            <button class="tab" onclick="showTab('review')">Under Review</button>
+            <button class="tab" onclick="showTab('success')">Recent Wins</button>
+        </div>
+
+        <div class="tab-content">
+            <div id="active-content">
+                <div class="petition-grid" id="activePetitionGrid">
+                    <div class="petition-card urgency-high" data-petition-id="demo1">
+                        <div class="urgency-indicator"></div>
+                        <div class="petition-header">
+                            <div>
+                                <div class="petition-title">Extend Library Hours During Finals Week</div>
+                                <div class="status-badge status-active">Active</div>
+                            </div>
+                            <div class="petition-category">Academic</div>
+                        </div>
+                        <div class="petition-description">Petition to extend library operating hours to 24/7 during finals week to provide students with adequate study space and resources when they need them most.</div>
+                        <div class="petition-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 78%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span><strong>1,243 signatures</strong> of 1,600 needed</span>
+                                <span>78% complete</span>
+                            </div>
+                        </div>
+                        <div class="petition-actions">
+                            <button class="sign-button" onclick="signPetition(this)">Sign Petition</button>
+                            <button class="share-button" onclick="sharePetition('demo1')">Share</button>
+                            <button class="view-button" onclick="viewDetails('demo1')">Details</button>
+                        </div>
+                        <div class="petition-meta">
+                            <span>Board meeting: March 15</span>
+                            <span>12 days remaining</span>
+                            <span class="priority-high">High Priority</span>
+                        </div>
+                    </div>
+
+                    <div class="petition-card urgency-medium" data-petition-id="demo2">
+                        <div class="urgency-indicator"></div>
+                        <div class="petition-header">
+                            <div>
+                                <div class="petition-title">Sustainable Food Options in Dining Halls</div>
+                                <div class="status-badge status-active">Active</div>
+                            </div>
+                            <div class="petition-category">Environment</div>
+                        </div>
+                        <div class="petition-description">Advocate for more locally-sourced, organic, and plant-based meal options across all campus dining facilities to reduce environmental impact and improve student health.</div>
+                        <div class="petition-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span><strong>675 signatures</strong> of 1,500 needed</span>
+                                <span>45% complete</span>
+                            </div>
+                        </div>
+                        <div class="petition-actions">
+                            <button class="sign-button" onclick="signPetition(this)">Sign Petition</button>
+                            <button class="share-button" onclick="sharePetition('demo2')">Share</button>
+                            <button class="view-button" onclick="viewDetails('demo2')">Details</button>
+                        </div>
+                        <div class="petition-meta">
+                            <span>Board meeting: March 28</span>
+                            <span>25 days remaining</span>
+                            <span class="priority-medium">Medium Priority</span>
+                        </div>
+                    </div>
+
+                    <div class="petition-card urgency-low" data-petition-id="demo3">
+                        <div class="urgency-indicator"></div>
+                        <div class="petition-header">
+                            <div>
+                                <div class="petition-title">Improve Campus WiFi Infrastructure</div>
+                                <div class="status-badge status-active">Active</div>
+                            </div>
+                            <div class="petition-category">Technology</div>
+                        </div>
+                        <div class="petition-description">Request upgrades to campus-wide WiFi infrastructure to support increased bandwidth demands and provide reliable internet access in all academic buildings.</div>
+                        <div class="petition-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 62%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span><strong>929 signatures</strong> of 1,500 needed</span>
+                                <span>62% complete</span>
+                            </div>
+                        </div>
+                        <div class="petition-actions">
+                            <button class="sign-button" onclick="signPetition(this)">Sign Petition</button>
+                            <button class="share-button" onclick="sharePetition('demo3')">Share</button>
+                            <button class="view-button" onclick="viewDetails('demo3')">Details</button>
+                        </div>
+                        <div class="petition-meta">
+                            <span>Board meeting: April 5</span>
+                            <span>33 days remaining</span>
+                            <span class="priority-low">Low Priority</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="review-content" style="display: none;">
+                <div class="petition-grid" id="reviewPetitionGrid">
+                    <div class="petition-card urgency-medium" data-petition-id="review1">
+                        <div class="urgency-indicator"></div>
+                        <div class="petition-header">
+                            <div>
+                                <div class="petition-title">Mental Health Resources Expansion</div>
+                                <div class="status-badge status-review">Under Review</div>
+                            </div>
+                            <div class="petition-category">Wellness</div>
+                        </div>
+                        <div class="petition-description">Proposal to expand campus counseling services and add more mental health support programs for students during high-stress periods.</div>
+                        <div class="petition-meta">
+                            <span>Submitted to board: February 20</span>
+                            <span>1,847 signatures collected</span>
+                            <span class="priority-high">High Priority</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="success-content" style="display: none;">
+                <div class="petition-grid" id="successPetitionGrid">
+                    <div class="petition-card urgency-high" data-petition-id="success1">
+                        <div class="urgency-indicator"></div>
+                        <div class="petition-header">
+                            <div>
+                                <div class="petition-title">24/7 Campus Security Escort Service</div>
+                                <div class="status-badge status-success">Implemented</div>
+                            </div>
+                            <div class="petition-category">Safety</div>
+                        </div>
+                        <div class="petition-description">Successfully implemented round-the-clock campus security escort service to ensure student safety during late-night hours.</div>
+                        <div class="petition-meta">
+                            <span>Implemented: January 15</span>
+                            <span>2,156 signatures</span>
+                            <span>Campus-wide safety improvement achieved</span>
+                        </div>
+                    </div>
+
+                    <div class="petition-card urgency-medium" data-petition-id="success2">
+                        <div class="urgency-indicator"></div>
+                        <div class="petition-header">
+                            <div>
+                                <div class="petition-title">Free Textbook Lending Program</div>
+                                <div class="status-badge status-success">Implemented</div>
+                            </div>
+                            <div class="petition-category">Academic</div>
+                        </div>
+                        <div class="petition-description">Established a comprehensive textbook lending program that has saved students an average of $400 per semester on course materials.</div>
+                        <div class="petition-meta">
+                            <span>Implemented: December 8</span>
+                            <span>1,923 signatures</span>
+                            <span>$400 average savings per student</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <section class="footer-info" id="about">
+            <div class="footer-content">
+                <h3>How Agora Creates Change</h3>
+                <p>Your Student Government identifies important issues and posts them here. When you sign, you're giving them the backing they need to negotiate with the administration. Together, we make real change happen.</p>
+                
+                <div class="footer-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">1</div>
+                        <div class="feature-title">Student Government Initiates</div>
+                        <div class="feature-desc">Your elected representatives identify key issues affecting student life and create formal petitions.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">2</div>
+                        <div class="feature-title">Students Unite</div>
+                        <div class="feature-desc">You and your fellow students sign petitions to show unified support for important changes.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">3</div>
+                        <div class="feature-title">Administration Acts</div>
+                        <div class="feature-desc">With strong student backing, your Student Government presents proposals to university leadership.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">4</div>
+                        <div class="feature-title">Change Happens</div>
+                        <div class="feature-desc">Real improvements are implemented, making campus life better for everyone.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Admin Panel - HIDDEN FROM USERS BUT FUNCTIONAL -->
+    <button class="admin-toggle" onclick="toggleAdminPanel()" title="Admin Panel">⚙️</button>
+
+    <script>
+        // Data Management
+        let petitionsData = {
+            active: [
+                {
+                    id: 'demo1',
+                    title: 'Extend Library Hours During Finals Week',
+                    category: 'Academic',
+                    description: 'Petition to extend library operating hours to 24/7 during finals week to provide students with adequate study space and resources when they need them most.',
+                    background: 'Many students struggle to find adequate study spaces during finals week, especially during late night hours when the library is closed. This creates unnecessary stress and limits academic performance.',
+                    impact: 'Extended library hours would provide 500+ additional study seats and access to research materials when students need them most, potentially improving overall academic performance.',
+                    goal: 1600,
+                    signatures: 1243,
+                    urgency: 'high',
+                    priority: 'High',
+                    meetingDate: '2025-03-15',
+                    daysLeft: 12,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo2',
+                    title: 'Sustainable Food Options in Dining Halls',
+                    category: 'Environment',
+                    description: 'Advocate for more locally-sourced, organic, and plant-based meal options across all campus dining facilities to reduce environmental impact and improve student health.',
+                    background: 'Current dining options lack sufficient sustainable and healthy choices, contributing to environmental degradation and limiting dietary options for health-conscious students.',
+                    impact: 'This initiative would reduce campus carbon footprint by 25% and provide healthier meal options for all students, supporting both environmental and personal wellness goals.',
+                    goal: 1500,
+                    signatures: 675,
+                    urgency: 'medium',
+                    priority: 'Medium',
+                    meetingDate: '2025-03-28',
+                    daysLeft: 25,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'demo3',
+                    title: 'Improve Campus WiFi Infrastructure',
+                    category: 'Technology',
+                    description: 'Request upgrades to campus-wide WiFi infrastructure to support increased bandwidth demands and provide reliable internet access in all academic buildings.',
+                    background: 'Students frequently experience slow internet speeds and connectivity issues, particularly in older buildings and during peak usage times, hindering academic work.',
+                    impact: 'WiFi improvements would benefit all 12,000+ students and faculty, enabling better online learning, research capabilities, and overall digital academic experience.',
+                    goal: 1500,
+                    signatures: 929,
+                    urgency: 'low',
+                    priority: 'Low',
+                    meetingDate: '2025-04-05',
+                    daysLeft: 33,
+                    createdAt: new Date().toISOString()
+                }
+            ],
+            review: [
+                {
+                    id: 'review1',
+                    title: 'Mental Health Resources Expansion',
+                    category: 'Wellness',
+                    description: 'Proposal to expand campus counseling services and add more mental health support programs for students during high-stress periods.',
+                    background: 'Current mental health resources are overwhelmed, with students waiting weeks for appointments during critical times like finals and major life transitions.',
+                    impact: 'Expanded services would reduce wait times from 3 weeks to 3 days and provide specialized support programs for anxiety, depression, and academic stress management.',
+                    goal: 2000,
+                    signatures: 1847,
+                    urgency: 'medium',
+                    priority: 'High',
+                    meetingDate: '2025-02-20',
+                    createdAt: new Date().toISOString()
+                }
+            ],
+            success: [
+                {
+                    id: 'success1',
+                    title: '24/7 Campus Security Escort Service',
+                    category: 'Safety',
+                    description: 'Successfully implemented round-the-clock campus security escort service to ensure student safety during late-night hours.',
+                    background: 'Students, particularly those with evening classes or late study sessions, felt unsafe walking across campus alone after dark.',
+                    impact: 'The escort service has been used over 400 times in its first month, significantly improving feelings of safety and enabling students to fully utilize campus resources.',
+                    goal: 2000,
+                    signatures: 2156,
+                    urgency: 'high',
+                    priority: 'High',
+                    implementedDate: '2025-01-15',
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 'success2',
+                    title: 'Free Textbook Lending Program',
+                    category: 'Academic',
+                    description: 'Established a comprehensive textbook lending program that has saved students an average of $400 per semester on course materials.',
+                    background: 'Rising textbook costs were creating financial barriers to education, with some students unable to afford required course materials.',
+                    impact: 'The program now serves 2,800+ students per semester, saving them collectively over $1.1 million annually on textbook costs.',
+                    goal: 1800,
+                    signatures: 1923,
+                    urgency: 'medium',
+                    priority: 'Medium',
+                    implementedDate: '2024-12-08',
+                    createdAt: new Date().toISOString()
+                }
+            ]
+        };
+
+        let commentsData = {};
+        let signedPetitions = new Set();
+        let currentPetitionId = null;
+
+        // Initialize the application
+        function initializeApp() {
+            createBackground();
+            updateHeaderStats();
+            loadActiveTab();
+        }
+
+        // Create animated background
+        function createBackground() {
+            const bgAnimation = document.getElementById('bgAnimation');
+            
+            // Create floating orbs
+            for (let i = 1; i <= 4; i++) {
+                const orb = document.createElement('div');
+                orb.className = `floating-orb orb-${i}`;
+                bgAnimation.appendChild(orb);
+            }
+            
+            // Create particles
+            const numberOfParticles = 50;
+            for (let i = 0; i < numberOfParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                
+                bgAnimation.appendChild(particle);
+            }
+        }
+
+        // Update header statistics
+        function updateHeaderStats() {
+            const totalSignatures = getAllPetitions().reduce((total, petition) => total + (petition.signatures || 0), 0);
+            const successCount = petitionsData.success.length;
+            const totalPetitions = getAllPetitions().length;
+            const successRate = totalPetitions > 0 ? Math.round((successCount / totalPetitions) * 100) : 0;
+
+            document.getElementById('activeStudentsCount').textContent = totalSignatures.toLocaleString();
+            document.getElementById('changesMadeCount').textContent = successCount;
+            document.getElementById('successRateCount').textContent = successRate + '%';
+        }
+
+        // Get all petitions
+        function getAllPetitions() {
+            return [...petitionsData.active, ...petitionsData.review, ...petitionsData.success];
+        }
+
+        // Load and display petitions for active tab
+        function loadActiveTab() {
+            showTab('active');
+        }
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all content
+            document.getElementById('active-content').style.display = 'none';
+            document.getElementById('review-content').style.display = 'none';
+            document.getElementById('success-content').style.display = 'none';
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected content and activate tab
+            document.getElementById(tabName + '-content').style.display = 'block';
+            document.querySelector(`[onclick="showTab('${tabName}')"]`).classList.add('active');
+            
+            // Add fade-in animation
+            const content = document.getElementById(tabName + '-content');
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                content.style.transition = 'all 0.5s ease';
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
+            }, 50);
+        }
+
+        // Sign petition functionality
+        function signPetition(button) {
+            if (button.disabled) return;
+            
+            const card = button.closest('.petition-card');
+            const petitionId = card.dataset.petitionId;
+            const petition = petitionsData.active.find(p => p.id === petitionId);
+            
+            if (!petition) return;
+
+            // Add to signed petitions
+            signedPetitions.add(petitionId);
+            
+            // Update petition signature count
+            petition.signatures = (petition.signatures || 0) + 1;
+            
+            // Update button
+            button.textContent = 'Signed ✓';
+            button.disabled = true;
+            
+            // Update progress display
+            updatePetitionProgress(card, petition);
+            
+            // Update header stats
+            updateHeaderStats();
+            
+            // Show success message
+            showSuccessMessage('Thank you for signing! Your Student Government will present this petition to the board.');
+        }
+
+        // Update petition progress display
+        function updatePetitionProgress(card, petition) {
+            const progressPercent = Math.round((petition.signatures / petition.goal) * 100);
+            const progressFill = card.querySelector('.progress-fill');
+            const progressText = card.querySelector('.progress-text span');
+            const percentageSpan = card.querySelector('.progress-text span:last-child');
+            
+            if (progressFill) {
+                progressFill.style.width = progressPercent + '%';
+            }
+            
+            if (progressText) {
+                progressText.innerHTML = `<strong>${petition.signatures.toLocaleString()} signatures</strong> of ${petition.goal.toLocaleString()} needed`;
+            }
+            
+            if (percentageSpan) {
+                percentageSpan.textContent = progressPercent + '% complete';
+            }
+        }
+
+        // Share petition functionality
+        function sharePetition(petitionId) {
+            const petition = getAllPetitions().find(p => p.id === petitionId);
+            if (!petition) return;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: `Support: ${petition.title}`,
+                    text: `Help make change on our campus by signing this petition: ${petition.title}`,
+                    url: window.location.href
+                });
+            } else {
+                const url = `${window.location.href}?petition=${petitionId}`;
+                navigator.clipboard.writeText(url).then(() => {
+                    showSuccessMessage('Link copied to clipboard! Share it with your fellow students.');
+                });
+            }
+        }
+
+        // View petition details (placeholder - would open modal in full version)
+        function viewDetails(petitionId) {
+            const petition = getAllPetitions().find(p => p.id === petitionId);
+            if (!petition) return;
+            
+            showSuccessMessage('Petition details would open in a modal window.');
+        }
+
+        // Success message system
+        function showSuccessMessage(message) {
+            const existingMessage = document.querySelector('.success-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'success-message';
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            // Slide in
+            setTimeout(() => {
+                messageDiv.classList.add('show');
+            }, 100);
+            
+            // Slide out and remove
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.remove();
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Smooth scrolling
+        function scrollToPetitions() {
+            document.getElementById('petitions').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Enhanced smooth scrolling for nav links
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Parallax effect for hero section
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            const rate = scrolled * -0.3;
+            
+            if (hero) {
+                hero.style.transform = `translateY(${rate}px)`;
+            }
+        });
+
+        // Mobile menu functionality
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            overlay.classList.toggle('show');
+            toggle.classList.toggle('open');
+            
+            // Prevent body scroll when menu is open
+            document.body.style.overflow = overlay.classList.contains('show') ? 'hidden' : 'auto';
+        }
+
+        function closeMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            overlay.classList.remove('show');
+            toggle.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (overlay.classList.contains('show') && 
+                !overlay.contains(e.target) && 
+                !toggle.contains(e.target)) {
+                closeMobileMenu();
+            }
+        });
+
+        // Close mobile menu on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMobileMenu();
+            }
+        });
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
